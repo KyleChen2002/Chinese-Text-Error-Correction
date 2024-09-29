@@ -1,0 +1,12 @@
+CFG_A = ''
+SECRET_KEY = 'dWaWybthMaJbRMkMhbLC'
+PWD_FILE = './user_secret_file'
+UPLOAD_FOLDER = r'D:\pycorrector\flaskr\upload'
+#UPLOAD_FOLDER = '/data/pycorrector/flaskr/upload'
+MAIL_SERVER = "smtp.qq.com"
+MAIL_PORT = 587
+MAIL_USE_TLS = True
+# MAIL_USE_SSL = False
+MAIL_USERNAME = "1712801917@qq.com"
+MAIL_PASSWORD = "bjtysnqhmejsheji"
+MAIL_DEFAULT_SENDER = "1712801917@qq.com"

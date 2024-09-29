@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<!--  <h1>{% block title %}纠错demo pycorrector-ai.jry{% endblock %}</h1>-->
+
+{% endblock %}
+
+{% block content %}
+  <form method="post" action="do_check" onsubmit="return mySubmit();return false;">
+    <label for="input_text">文本</label>
+<!--    <input type="text" name="input_text" id="input_text" required value="{{ last_input }}">-->
+    <textarea rows="8" cols="30" name="input_text" id="input_text">{{ last_input }}</textarea>
+    <input type="submit" value="提交">
+  </form>
+
+  <script type="text/javascript">
+     function mySubmit() {
+       console.log('1 clear msg')
+       let msg = document.getElementById("msg")
+       console.log('2', msg)
+       msg.textContent = ""
+       if(document.getElementById('reset_b').style.visibility=='hidden'){
+          document.getElementById('reset_b').style.visibility='visible';
+          document.getElementById('reset_b').style.height="50%"
+          }else{
+          document.getElementById('reset_b').style.visibility='hidden';
+          document.getElementById('reset_b').style.height="0"
+          }
+     }
+  </script>
+  <!--<iframe id="reset_b" src =get_flashed_messages() width=100% height=46%>
+    <p>Your browser does not support iframes.</p>
+  </iframe>-->
+  
+  <h1>闪现信息</h1>
+  {% for msg in get_flashed_messages() %}
+     <iframe id="reset_b" src ={{msg}} width=100% height=46%>
+       <p>Your browser does not support iframes.</p>
+     </iframe> 
+     <p>{{msg}}</p>
+  {% endfor %}
+
+
+{% endblock %}

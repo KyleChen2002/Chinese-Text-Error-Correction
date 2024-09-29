@@ -1,0 +1,27 @@
+MODEL:
+  BERT_CKPT: "hfl/chinese-macbert-base"
+  #DEVICE: "cuda"
+  DEVICE: "cpu"
+  NAME: "macbert4csc"
+  GPU_IDS: [0]
+  # [loss_coefficient]
+  HYPER_PARAMS: [0.3]
+  WEIGHTS: "output/macbert4csc/epoch=02-val_loss=0.02.ckpt"
+  #WEIGHTS: ""
+
+DATASETS:
+  TRAIN: "output/train74.json"
+  VALID: "output/dev.json"
+  TEST: "output/test.json"
+
+SOLVER:
+  BASE_LR: 5e-5
+  WEIGHT_DECAY: 0.01
+  #BATCH_SIZE: 32
+  BATCH_SIZE: 64
+  #MAX_EPOCHS: 10
+  MAX_EPOCHS: 2
+  ACCUMULATE_GRAD_BATCHES: 4
+
+OUTPUT_DIR: "output/macbert4csc"
+MODE: ["train", "test"]

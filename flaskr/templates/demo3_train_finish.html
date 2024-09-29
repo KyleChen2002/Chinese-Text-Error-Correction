@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<!--  <h1>{% block title %}纠错demo pycorrector-ai.jry{% endblock %}</h1>-->
+
+{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist" xmlns:c="http://www.w3.org/1999/XSL/Transform" xmlns:c="">
+  <div class="third_page" id="page3">
+    <form action="/turn_back" method="post">
+      <button class="returnBtn_demoX" type="submit">返回</button>
+    </form>
+  </div>
+</ul>
+
+<div class="tab-content" id="pills-tabContent">
+    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
+
+    <div style="display: block; height: 50px;">
+        <span style="display:inline;"><h3 style="width: auto; float: left; margin-top: 8px;">训练自定制化模型</h3></span>
+        <span style="display:inline;">
+            <img name="img_demo1" class="demoX_model_img" src="{{ url_for('static', filename='pycorrector.png') }}" alt="PycorrecTor">
+            <label for="img_demo1" class="demoX_model_label">Model By</label>
+        </span>
+    </div>
+
+    <script> alert("模型训练完成");</script>
+        <br><br><br>
+    <h4>上传txt格式数据集</h4>
+    <div align="center">
+        {# enctype：属性用于指定将上传文件数据发送给服务器端之前对表单数据进行编码的斱式 #}
+        {# enctype="multipart/form-data" => 表示不对字符编码。当使用有文件上传控件的表单时，该值是必需的。 #}
+        <form action="/uploader" method="post" enctype="multipart/form-data" target="the_iframe_demo3_finish">
+            <br><br><br>
+            {# accept可以自定以文件上传格式 #}
+            <input type="file" name="file" accept=".txt" value="{{ csrf_token }}" />
+            <br><br><br>
+            <input class="demoX_submit" type="submit" onclick="showInfo()" value="提交" />
+        </form>
+        <iframe id="is_iframe" name="the_iframe_demo3_finish" style="display:none;"></iframe>
+
+        <br><br><br>
+    </div>
+
+    <script type="text/javascript">
+        function displayAlert(type, data, time){
+            var lunbo=document.createElement("div");
+
+            if(type == "success") {
+                lunbo.style.backgroundColor = "#009900";
+            }
+            else {
+                console.log("入参type错误");
+                return;
+            }
+
+            lunbo.id="lunbo";
+            lunbo.style.position = "absolute";
+            lunbo.style.width = "200px";
+            lunbo.style.height = "60px";
+            lunbo.style.left = "42%";
+            lunbo.style.top = "33%";
+            lunbo.style.color = "white";
+            lunbo.style.fontSize = "25px";
+            lunbo.style.borderRadius = "20px";
+            lunbo.style.textAlign="center";
+            lunbo.style.lineHeight="60px";
+
+            if(document.getElementById("lunbo")==null){
+                document.body.appendChild(lunbo);
+                lunbo.innerHTML=data;
+                setTimeout(function(){
+                    document.body.removeChild(lunbo);
+                    } ,time);
+            }
+        }
+
+        function showInfo() {
+            var sendData;
+            $.ajax({
+                type: "GET",
+                url: "/function_Get_filedir_stat", //后端请求
+                data: sendData,
+                dataType: "json",
+                async: true,
+                success: function (data) {
+                    // console.log(typeof data);
+                    // console.log(data);
+                    // alert('Successfully get: ' + data + '\ntype of: '+typeof data);
+                    if (data == 0)
+                        displayAlert("success", "正在上传...", 20000);
+                    else
+                        alert("上传文件无效");
+                },
+                error: function (errorInfo) {
+                    console.log("errorInfo\n" + errorInfo);
+                    alert("请求失败");
+                }
+            });
+        }
+    </script>
+
+  </div>
+</div>
+
+{% endblock %}

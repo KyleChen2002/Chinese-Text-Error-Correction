@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<div class="grid-container" id="grid-container_demo">
+  <div class="grid-item">
+<!--    <label for="img_demo">Model By</label>-->
+    <img name="img_demo" style="border-radius:20px;" src="{{ url_for('static', filename='decorate_demo.png') }}" alt="欢迎使用快准-公文纠错系统!">
+<!--    <img name="img_demo" src="{{ url_for('static', filename='pycorrector.png') }}" alt="欢迎使用快准-公文纠错系统!">-->
+  </div>
+
+  <div class="grid-item">
+    <label for="ul_demo" style="font-size: 2rem; color: #072A40; font-family: Microsoft Yahei;">功能选择</label>
+    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist" name="ul_demo" xmlns:c="http://www.w3.org/1999/XSL/Transform" xmlns:c="">
+      <div class="first_page" id="page1">
+        <div style="margin-bottom: 15px; margin-top: 15px;">
+          <form action="/turn1" method="post" style="display:inline;">
+            <button class="btn_in_demo" type="submit" style="font-size: 1.25rem; padding: 10px 40px;">文本纠错</button>
+            <label>选择纠错模型，之后在文本框输入一段文本并提交，界面右侧显示纠错结果</label>
+          </form>
+        </div>
+        <div style="margin-bottom: 25px; margin-top: 25px;">
+          <form action="/turn2" method="post" style="display:inline;">
+            <button class="btn_in_demo" type="submit" style="font-size: 1.25rem; padding: 10px 40px;">文档纠错</button>
+            <label>选择纠错模型，之后提交一个文件，系统将返回纠错完成的word文件</label>
+          </form>
+        </div>
+        <div style="margin-bottom: 15px; margin-top: 15px;">
+          <form action="/turn3" method="post" style="display:inline;">
+            <button class="btn_in_demo" type="submit" style="font-size: 1.25rem; padding: 10px 30px;">自定义模型</button>
+            <label>提交一个公文文件，系统后台自动进行训练，训练完成后返回提示</label>
+          </form>
+        </div>
+      </div>
+    </ul>
+  </div>
+</div>
+
+{% endblock %}

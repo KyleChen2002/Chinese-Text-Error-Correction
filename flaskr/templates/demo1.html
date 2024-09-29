@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist" xmlns:c="http://www.w3.org/1999/XSL/Transform" xmlns:c="">
+  <div class="first_page" id="page1">
+    <form action="/turn_back" method="post">
+      <button class="returnBtn_demoX" type="submit" sytle="min-width: 10em;">返回</button>
+    </form>
+  </div>
+</ul>
+
+<div class="tab-content" id="pills-tabContent">
+    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
+
+    <div style="display: block; height: 50px;">
+        <span style="display:inline;"><h3 style="width: auto; float: left;">文本纠错</h3></span>
+        <span style="display:inline;">
+            <img name="img_demo1" class="demoX_model_img" src="{{ url_for('static', filename='pycorrector.png') }}" alt="PycorrecTor">
+            <label for="img_demo1" class="demoX_model_label">Model By</label>
+        </span>
+    </div>
+<!--    <div style="display: block; height: 50px;">-->
+<!--        <span style="display:inline;"><h3 style="float: left; width: auto;">文本纠错</h3></span>-->
+<!--        <span style="display:inline;">-->
+<!--          <div class="first_page" id="page1">-->
+<!--            <form action="/turn_back" method="post" style="float: right;">-->
+<!--              <button class="returnBtn_demo" type="submit" style="min-width: 10rem;">返回</button>-->
+<!--            </form>-->
+<!--          </div>-->
+<!--        </span>-->
+<!--    </div>-->
+
+    <form action="/submit" method="post">
+      <label for="lang">可用模型</label>
+      <span>
+          <select name="models" id="lang" style="float: left; width: auto; height: auto; padding: 7px 10px;">
+            {%  if g.flag == 0 %}
+                <option value="default" selected>default</option>
+                <option value="train">train</option>
+            {%  elif g.flag == 1 %}
+                <option value="default">default</option>
+                <option value="train" selected>train</option>
+            {% else %}
+                <option value="default" selected>default</option>
+                <option value="train">train</option>
+            {% endif %}
+          </select>
+          <button id="submit_demoX" type="submit" onclick="alert_self()">submit</button>
+      </span>
+    </form>
+
+
+    <div class="grid-container" id="grid-container_demo1">
+        <div class="grid-item">
+            <label for="input_text">待纠错文本</label>
+<!--            <form method="post" action="/do_check" onsubmit="return mySubmit();return false;">-->
+            <form id="textareaForm" method="post" action="/do_check" onsubmit="mySubmit();return false;">
+<!--            <form id="textareaForm" method="post" action="/do_check">-->
+              <textarea rows="8" cols="30" name="input_text" id="input_text" placeholder="请输入不超过1000字的一段文字,不要换行...">{{ last_input }}</textarea>
+              <input class="demoX_submit" type="submit" onclick="showInfo()" value="提交">
+            </form>
+<!--            <input class="demoX_submit" type="submit" onclick="showInfo()" value="提交">-->
+        </div>
+
+        <div class="grid-item">
+            <label>纠错结果</label>
+            <br>
+            <div style="display: block; height: 50px;">
+                <span style="display:inline;">
+                    <label style="float:left">左侧为原文本</label><label style="float: right">右侧为改正后的文本</label>
+                </span>
+            </div>
+            {% for msg in get_flashed_messages() %}
+               <iframe id="reset_b" srcdoc="{{msg}}" width=100% height=46%>
+                 <p>Your browser does not support iframes.</p>
+               </iframe>
+            {% endfor %}
+            <img style="object-fit: contain; width: 220px; margin-left: 8px;" src="{{ url_for('static', filename='demo1_help.png') }}" alt="PycorrecTor">
+        </div>
+    </div>
+
+    <script type="text/javascript">
+    function mySubmit() {
+        document.getElementById("textareaForm").submit();//表单提交
+        return false;
+        // console.log('1 clear msg')
+        // let msg = document.getElementById("input_text").value
+        // console.log('2', msg)
+        // msg.textContent = ""
+    }
+    </script>
+
+    <script type="text/javascript">
+        function displayAlert(type, data, time){
+            var lunbo=document.createElement("div");
+
+            if(type == "success") {
+                lunbo.style.backgroundColor = "#009900";
+            }
+            else {
+                console.log("入参type错误");
+                return;
+            }
+
+            lunbo.id="lunbo";
+            lunbo.style.position = "absolute";
+            lunbo.style.width = "200px";
+            lunbo.style.height = "60px";
+            // lunbo.style.marginLeft = "-300px";
+            // lunbo.style.marginTop = "-30px";
+            lunbo.style.left = "50%";
+            lunbo.style.top = "30%";
+            lunbo.style.color = "white";
+            lunbo.style.fontSize = "25px";
+            lunbo.style.borderRadius = "20px";
+            lunbo.style.textAlign="center";
+            lunbo.style.lineHeight="60px";
+
+            if(document.getElementById("lunbo")==null){
+                document.body.appendChild(lunbo);
+                lunbo.innerHTML=data;
+                setTimeout(function(){
+                    document.body.removeChild(lunbo);
+                    } ,time);
+            }
+        }
+        function alert_self(){
+            var sel=document.getElementById('lang');
+            var sid=sel.selectedIndex;
+            alert("成功修改模型!\n模型已经被修改为 \""+sel[sid].value+"\"");
+        }
+        function showInfo() {
+            // document.getElementById("textareaForm").submit();//表单提交
+            var sendData;
+            $.ajax({
+                type: "GET",
+                url: "/function_Get_textarea_stat", //后端请求
+                data: sendData,
+                dataType: "json",
+                async: true,
+                success: function (data) {
+                    // console.log(typeof data);
+                    // console.log(data);
+                    // alert('Successfully get: ' + data + '\ntype of: '+typeof data);
+                    if (data == 0)
+                        displayAlert("success", "纠错中", 5000);
+                    else
+                        alert("上传文字为空或长度大于1000字");
+                },
+                error: function (errorInfo) {
+                    console.log("errorInfo\n" + errorInfo);
+                    alert("请求失败");
+                }
+            });
+        }
+    </script>
+
+  </div>
+</div>
+
+{% endblock %}

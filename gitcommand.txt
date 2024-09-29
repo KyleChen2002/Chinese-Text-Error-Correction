@@ -1,0 +1,104 @@
+mkdir xxxx
+git init                      把这个目录变成Git可以管理的仓库
+git add <file>                把文件添加到仓库
+git commit -m <message>       把文件提交到仓库
+    -m 后面输入的是本次提交的说明
+git status                    掌握仓库当前的状态
+
+git diff                      查看difference
+git diff HEAD -- <file>       查看工作区和版本库里最新版的区别
+
+git log                       显示从最近到最远的提交日志
+git log --pretty=oneline      美化log指令的输出
+git log --graph               查看分支合并图
+
+git reset --hard <commit_id>  回滚到上一个版本(版本号写前7位也许就够了)
+    --hard 
+git reset HEAD <file>         把暂存区的修改撤销掉(unstage),重新放回工作区
+
+git reflog                    查看命令历史
+git checkout -- <file>        丢弃工作区的修改,回到最近一次add/commit的状态. 即如果file已经添加到暂存区,则回到暂存区的版本,如果修改后没有放到stage,则回到和版本库一样的状态
+git rm <file>                 从版本库中删除file,删除后还需要commit
+
+git push origin <branch>      把本地库的内容(某一分支的内容)推送到远程库(地址叫做origin)
+git remote -v                 查看远程库信息
+git remote rm <name>          删除远程库(解除本地和远程的绑定关系,物理删除远程库需要在github上做)
+git clone <web_address>       克隆仓库(需要仓库地址,无需在已有git库中输入)
+
+git branch                    列出所有branch,当前分支前会有'*'
+git branch <branch>           创建branch
+git checkout <branch>         切换至branch
+    git switch <branch>       切换至分支
+git checkout -b <branch>      创建并切换至branch
+    git switch -c <name>      创建并切换至branch
+git merge <branch>            将指定branch合并到当前分支
+    git merge --no-ff -m "xxx" <branch> 普通模式合并，合并后的历史有分支
+git branch -d <branch>        删除branch
+
+git stash                     储存暂存区stage
+git stash list                查看被保存的暂存区
+git stash apply               恢复暂存区,但stash中内容不删除
+git stash drop                删除stash中的内容
+git stash pop                 恢复暂存区,同时删除stash内容
+git stash apply stash@{0}     对stash中特定的项(stash@{0})进行操作
+git cherry-pick <commit_id>   复制一个特定提交到当前分支
+
+git tag                       查看所有标签
+git tag <tagname>             打一个新标签(默认在最新提交上打)
+git tag <tagname> <commit_id> 对特定的一次提交打标签
+git show <tagname>            查看标签信息
+git tag -a <tagname> -m "xxx" 创建带有说明的标签
+git tag -d <tagname>          删除标签
+git push origin <tagname>     推送标签
+git push origin --tags        推送全部尚未推送至远程的标签
+git push origin :refs/tags/<tagname>  删除远程标签(现在本地删除标签再删除远程的)
+
+为什么Git添加文件需要add，commit一共两步呢？
+    因为commit可以一次提交很多文件，所以你可以多次add不同的文件
+例:
+$ git add file1.txt
+$ git add file2.txt file3.txt
+$ git commit -m "add 3 files."
+
+Git命令必须在Git仓库目录内执行(git init除外), 在仓库目录外执行是没有意义的
+提交修改和提交新文件是一样的两步add + commit。add是将文件修改添加到暂存区(stage),commit是把暂存区的所有内容提交到当前分支(此处是master分支)
+commit id(版本号) 在Git中是一个很大的数字
+Git中用"HEAD"表示当前版本(可以直接作为版本号传给reset),上一个版本是"HEAD^",上100个版本是"HEAD~100"
+    HEAD实际上指向的是分支，而分支(如master)指向的才是提交
+回滚会把上一次commit的所有内容全部回滚
+工作区:learngit文件夹; 版本库:.git文件夹; 暂存区:.git/stage文件
+    暂存区stage与分支branch无关，更改分支不会改变暂存区中的状态
+Git管理的是修改,而不是文件
+git checkout -- <file>实质是用版本库里的版本替换工作区的版本,因此无论是修改还是删除,都可以通过checkout还原
+建立远程库:
+    git remote add origin https://github.com/YoRHa12B/learngit.git 关联远程库,其中需要给远程库指定名字(习惯叫做origin)
+    git push -u origin <branch>   第一次推送分支的所有内容,<branch>可以是master
+    git push origin <branch>      推送最新修改
+    
+Git中的branch实际上是指针，branch的切换实际上是在不同指针中切换
+
+Git无法自动合并分支时，必须手动解决冲突，再合并.
+    解决冲突就是把合并失败的文件手动编辑成自己想要的内容,再提交
+
+分支管理原则:
+    master应该十分稳定,仅用来发布新版本
+    dev用于干活,需要发布时将其合并到master上
+    每个人都有自己的分支，时不时向dev上合并
+
+合并分支时，加上--no-ff参数就可以用普通模式合并，合并后的历史有分支，能看出来曾经做过合并，而fast forward合并就看不出来曾经做过合并
+
+用分支修改bug:
+    在要修改bug的分支上创建一个新的临时分支来修复,修复后进行合并,然后删除临时分支
+
+开发新特性:
+    最好新建一个分支,开发完后再合并
+
+多人协作:
+    查看远程库信息，使用git remote -v；
+    本地新建的分支如果不推送到远程，对其他人就是不可见的；
+    从本地推送分支，使用git push origin <branch>，如果推送失败，先用git pull抓取远程的新提交；
+    在本地创建和远程分支对应的分支，使用git checkout -b <branch> origin/<branch>，本地和远程分支的名称最好一致；
+    建立本地分支和远程分支的关联，使用git branch --set-upstream <branch> origin/<branch>；
+    从远程抓取分支，使用git pull，如果有冲突，要先处理冲突。
+
+*标签总是和某个commit挂钩。如果这个commit既出现在master分支，又出现在dev分支，那么在这两个分支上都可以看到这个标签。
